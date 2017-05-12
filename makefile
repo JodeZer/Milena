@@ -4,13 +4,14 @@ endif
 
 CURDIR := $(shell pwd)
 
+
 all:  debug
 
 debug: Milena
-	./Milena
+	./bin/Milena
 
 run: bin/Milena
-	nohup ./bin/Milena >> Milena.log 2>&1 &
+	nohup ./bin/Milena >> bin/log/Milena.log 2>&1 &
 
 Milena: build
 

@@ -48,15 +48,21 @@ type Config struct {
 		// Server address
 		Brokers     []string
 
-		// this time start offset. configed or from metadata
-		StartOffset int
 
 		// listen all topics
 		ListenAll   bool
 
 		// listen topic
-		Topics      []string
+		Topics      []*topicSetting
 	}
+}
+
+type topicSetting struct {
+	//topic name
+	Name  string
+
+	// this time start offset. configed or from metadata
+	Start int
 }
 
 func NewConfig(fileName string) *Config {
