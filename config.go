@@ -42,9 +42,6 @@ type Config struct {
 		// storage consumer metadata format: {clusterName}/{topic}.meta
 		MetaDataDir string`yaml:"-"`
 
-		// storage consumer consumed data format:{}
-		DataDir     string`yaml:"-"`
-
 		// Server address
 		Brokers     []string
 
@@ -53,7 +50,7 @@ type Config struct {
 		ListenAll   bool
 
 		// listen topic
-		Topics      []*topicSetting
+		Topics      []topicSetting
 	}
 }
 
@@ -61,8 +58,19 @@ type topicSetting struct {
 	//topic name
 	Name  string
 
+	//partition setting
+	Partitions []partionSetting
+}
+
+type partionSetting struct {
+
+	//partition num
+	Partition int32
+
 	// this time start offset. configed or from metadata
-	Start int
+	Start int64
+
+
 }
 
 func NewConfig(fileName string) *Config {

@@ -19,6 +19,8 @@ func NewInsatnce(conf *Config) (*Instance, error) {
 	ins := &Instance{}
 	ins.proclock = &plock{conf.LockFile}
 	ins.c = conf
+	log.Degbugf("%+v", conf)
+
 	return ins, nil
 }
 
@@ -35,7 +37,7 @@ func (i *Instance) Start() {
 		k, err := newKafkaCluster(&kafkaClusterConfig{
 			ClusterName:s.Name,
 			Brokers:s.Brokers,
-			DataDir:s.DataDir,
+			DataDir:i.c.DataDir + "/" + s.Name,
 			ListenTopics:s.Topics,
 		})
 		if err != nil {

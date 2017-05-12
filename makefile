@@ -8,7 +8,7 @@ CURDIR := $(shell pwd)
 all:  debug
 
 debug: Milena
-	./bin/Milena
+	cp Milena.yml bin && ./bin/Milena
 
 run: bin/Milena
 	nohup ./bin/Milena >> bin/log/Milena.log 2>&1 &
@@ -19,4 +19,4 @@ build: cmd/Milena/main.go
 	go build -o bin/Milena cmd/Milena/main.go
 
 clean:
-	rm Milena
+	rm -r bin
