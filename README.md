@@ -54,6 +54,22 @@ TODO: this will gen a command soon
 kill -2 $(pid of Milena)
 ```
 
+
+## results
+
+topic contents will append to a file which is name by
+
+```shell
+${datadir}/${clustername}/${topicName}.log
+```
+conetnt will like this:
+
+```shell
+ts=>[${timestamp}] p:${parition} o:${offset} =>${value}
+```
+
+there is a metadata dir in ${datadir}/${clustername}, never delete it unless lt is broken.it stored offsets already consumed.
+
 ## thanks to
 
 - [sarama](https://github.com/Shopify/sarama)
