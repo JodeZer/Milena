@@ -5,27 +5,21 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/JodeZer/Milena/log"
 	"encoding/binary"
+	"os"
+	"github.com/pkg/errors"
+	"fmt"
 )
 
 //========================================
 //storage Engine
 type topicStorageEngine interface {
-	Append(sarama.ConsumerMessage) error
+	Append(*sarama.ConsumerMessage) error
 }
 
 type metaStorageEngine interface {
 	UpdateOffset(string, int64) error
 	GetOffset(string) int64
 	Close()
-}
-//=======================================
-//implement topicStorage Engine
-type topicStorageConfig struct {
-
-}
-
-type topicSimpleStorage struct {
-
 }
 
 //=====================================
@@ -62,4 +56,42 @@ func (m *metaLevelDBStorageEngine) GetOffset(key string) int64 {
 
 func (m *metaLevelDBStorageEngine) Close() {
 	m.db.Close()
+}
+
+//=======================================
+//implement topicStorage Engine
+func newTopicSimpleStorageEngine(conf *topicStorageConfig) topicStorageEngine {
+	e := &topicSimpleStorageEngine{}
+	if f, err := os.OpenFile(conf.FileName, os.O_APPEND | os.O_CREATE | os.O_WRONLY, 0666); err != nil {
+		log.Errorf("%s", err)
+	} else {
+		e.file = f
+	}
+	return e
+}
+
+type topicStorageConfig struct {
+	FileName string
+}
+
+type topicSimpleStorageEngine struct {
+	file *os.File
+	//buffer *bytes.Buffer
+}
+
+func (e *topicSimpleStorageEngine) Append(msg *sarama.ConsumerMessage) error {
+	if e.file == nil {
+		return errors.New("file open failed")
+	}
+	e.file.WriteString(genLineMsg(msg))
+	e.file.Sync()
+	return nil
+}
+
+func (e *topicSimpleStorageEngine) flush() {
+
+}
+
+func genLineMsg(msg *sarama.ConsumerMessage) string {
+	return fmt.Sprintf("ts=>[%s] p:%d o:%d => %s\n", msg.Timestamp.Format("2006-01-02 15:04:05"), msg.Partition, msg.Offset, msg.Value)
 }

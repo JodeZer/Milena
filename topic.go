@@ -40,7 +40,7 @@ func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *to
 	for _, p := range conf.Partions {
 		t.partitionSettings[p.Partition] = &p
 	}
-	//t.tEngine =
+	t.tEngine = newTopicSimpleStorageEngine(&topicStorageConfig{t.topicFileName})
 	return t
 }
 
@@ -93,13 +93,13 @@ func (t *topicWorker)readLoop() {
 	}()
 	for msg := range msgChan {
 		log.Degbugf(genLineMsg(msg))//TODO storage
+		if err := t.tEngine.Append(msg); err != nil {
+			log.Errorf("append fail %s", err)
+			continue
+		}
 		_ = t.partionKeys[msg.Partition]
 		t.mEngine.UpdateOffset(t.partionKeys[msg.Partition], msg.Offset + 1)
 	}
-}
-
-func genLineMsg(msg *sarama.ConsumerMessage) string {
-	return fmt.Sprintf("ts=>[%s] p:%d o:%d => %s\n", msg.Timestamp.Format("2006-01-02 15:04:05"), msg.Partition, msg.Offset, msg.Value)
 }
 
 func genPartitionkey(topicKey string, p int32) string {
