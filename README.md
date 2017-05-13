@@ -68,7 +68,7 @@ conetnt will like this:
 ts=>[${timestamp}] p:${parition} o:${offset} =>${value}
 ```
 
-there is a metadata dir in ${datadir}/${clustername}, never delete it unless lt is broken.it stored offsets already consumed.
+there is a metadata dir in `${datadir}/${clustername}`, never delete it unless lt is broken.It stored offsets already consumed.
 
 ## thanks to
 
