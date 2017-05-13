@@ -4,6 +4,7 @@ import (
 	"gopkg.in/Shopify/sarama.v1"
 	"github.com/JodeZer/Milena/log"
 	"fmt"
+	"time"
 )
 
 var iF = func(b bool, l interface{}, r interface{}) interface{} {
@@ -29,6 +30,7 @@ type topicWorker struct {
 	pConsumer         []sarama.PartitionConsumer
 	partionKeys       map[int32]string
 	partitionSettings map[int32]*partionSetting
+	stopC             StopChan
 }
 
 func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *topicWorkerConfig) *topicWorker {
@@ -41,17 +43,11 @@ func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *to
 		t.partitionSettings[p.Partition] = &p
 	}
 	t.tEngine = newTopicSimpleStorageEngine(&topicStorageConfig{t.topicFileName})
+	t.stopC = make(StopChan, 1)
 	return t
 }
 
 func (t *topicWorker) Run() {
-	for k, v := range t.partitionSettings {
-		dbOff := t.mEngine.GetOffset(genPartitionkey(t.topickey, k))
-		if v.Start < dbOff {
-			t.partitionSettings[k].Start = dbOff
-		}
-	}
-
 	ps, err := t.consumer.Partitions(t.c.TopicName)
 	if err != nil {
 		log.Errorf("%s", err)
@@ -61,7 +57,15 @@ func (t *topicWorker) Run() {
 	t.partionKeys = make(map[int32]string, len(ps))
 
 	for _, p := range ps {
-		pc, err := t.consumer.ConsumePartition(t.c.TopicName, p, t.partitionSettings[p].Start)
+		dbOff := t.mEngine.GetOffset(genPartitionkey(t.topickey, p))
+		pconf, ok := t.partitionSettings[p]
+		if !ok {
+			pconf = &partionSetting{Start:0}
+		}
+		if pconf.Start < dbOff {
+			pconf.Start = dbOff
+		}
+		pc, err := t.consumer.ConsumePartition(t.c.TopicName, p, pconf.Start)
 		t.partionKeys[p] = t.topickey + "~" + fmt.Sprintf("%d", p)
 		if err != nil {
 			log.Errorf("%s", err)
@@ -76,29 +80,49 @@ func (t *topicWorker) Run() {
 }
 
 func (t *topicWorker) Stop() {
-
+	for i := 0; i < len(t.pConsumer) + 1; i++ {
+		t.stopC <- stopSig{}
+	}
+	//wait all exit
+	time.Sleep(1 * time.Second)
+	t.mEngine.Close()
+	t.tEngine.Close()
 }
 
 func (t *topicWorker)readLoop() {
 	msgChan := make(chan *sarama.ConsumerMessage, 1000)
 	func() {
-		for _, pc := range t.pConsumer {
-			go func(spc sarama.PartitionConsumer) {
+		for i, pc := range t.pConsumer {
+			go func(spc sarama.PartitionConsumer, index int) {
 				for {
-					msg := <-spc.Messages()
-					msgChan <- msg//TODO timeout
+
+					select {
+					case msg := <-spc.Messages():
+						msgChan <- msg//TODO timeout
+					case <-t.stopC:
+						spc.Close()
+						log.Degbugf("%s~%d rcv stop sig and stop", t.topickey, index)
+						return
+					case err := <-spc.Errors():
+						log.Errorf("%s %s", t.topickey, err)
+					}
 				}
-			}(pc)
+			}(pc, i)
 		}
 	}()
-	for msg := range msgChan {
-		log.Degbugf(genLineMsg(msg))//TODO storage
-		if err := t.tEngine.Append(msg); err != nil {
-			log.Errorf("append fail %s", err)
-			continue
+	for {
+		select {
+		case msg := <-msgChan:
+			log.Degbugf(genLineMsg(msg))//TODO storage
+			if err := t.tEngine.Append(msg); err != nil {
+				log.Errorf("append fail %s", err)
+				continue
+			}
+			t.mEngine.UpdateOffset(t.partionKeys[msg.Partition], msg.Offset + 1)
+		case <-t.stopC:
+			log.Degbugf("%s rcv stop sig and stop write", t.c.TopicName)
+			return
 		}
-		_ = t.partionKeys[msg.Partition]
-		t.mEngine.UpdateOffset(t.partionKeys[msg.Partition], msg.Offset + 1)
 	}
 }
 
