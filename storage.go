@@ -8,12 +8,14 @@ import (
 	"os"
 	"github.com/pkg/errors"
 	"fmt"
+	"sync"
 )
 
 //========================================
 //storage Engine
 type topicStorageEngine interface {
 	Append(*sarama.ConsumerMessage) error
+	Close()
 }
 
 type metaStorageEngine interface {
@@ -76,6 +78,7 @@ type topicStorageConfig struct {
 
 type topicSimpleStorageEngine struct {
 	file *os.File
+	frw  sync.RWMutex
 	//buffer *bytes.Buffer
 }
 
@@ -83,13 +86,17 @@ func (e *topicSimpleStorageEngine) Append(msg *sarama.ConsumerMessage) error {
 	if e.file == nil {
 		return errors.New("file open failed")
 	}
+	e.frw.RLock()
+	defer e.frw.RUnlock()
 	e.file.WriteString(genLineMsg(msg))
 	e.file.Sync()
 	return nil
 }
 
-func (e *topicSimpleStorageEngine) flush() {
-
+func (e *topicSimpleStorageEngine) Close() {
+	e.frw.Lock()
+	defer e.frw.Unlock()
+	e.file.Close()
 }
 
 func genLineMsg(msg *sarama.ConsumerMessage) string {

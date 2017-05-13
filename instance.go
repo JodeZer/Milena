@@ -56,9 +56,10 @@ func (i *Instance) Start() {
 func (i *Instance) Stop() {
 	i.rw.Lock()
 	defer i.rw.Unlock()
-	i.proclock.Unlock()
 	for _, c := range i.clusters {
+		log.Degbugf("%s call stop", c.c.ClusterName)
 		c.Stop()
 	}
+	i.proclock.Unlock()
 }
 

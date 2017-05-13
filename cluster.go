@@ -59,10 +59,7 @@ func (k *kafkaCluster) connectloop() {
 	defer k.rw.Unlock()
 	c := sarama.NewConfig()
 	recon:
-	for {
-		if atomic.LoadInt32(&k.state) != running {
-			return
-		}
+	for atomic.LoadInt32(&k.state) == running {
 		consumer, err := sarama.NewConsumer(k.c.Brokers, c)
 		if err != nil {
 			log.Errorf("cluster=>[%s] connected fail to %v ,err=>", k.c.ClusterName, k.c.Brokers, err)
@@ -110,8 +107,10 @@ func (k *kafkaCluster) Stop() {
 	k.rw.Lock()
 	defer k.rw.Unlock()
 	for _, tw := range k.tWorkers {
+		log.Degbugf("%s call stop", tw.c.TopicName)
 		tw.Stop()
 	}
+	k.consumer.Close()
 	k.mEngine.Close()
 }
 
