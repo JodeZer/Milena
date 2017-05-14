@@ -58,6 +58,7 @@ func (k *kafkaCluster) connectloop() {
 	k.rw.Lock()
 	defer k.rw.Unlock()
 	c := sarama.NewConfig()
+	c.Net.DialTimeout = 5 *time.Second
 	recon:
 	for atomic.LoadInt32(&k.state) == running {
 		consumer, err := sarama.NewConsumer(k.c.Brokers, c)
