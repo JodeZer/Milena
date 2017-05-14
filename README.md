@@ -1,12 +1,12 @@
 # Milena
 kafka probe tool
 
-While using kafka as a prodcuer, it is a problem to know what if prodcuer pushs right message to it (At least kafka-manager doesn't show topic contents); 
+While using kafka as a prodcuer, it is a problem to know what if prodcuer pushs right message to it (At least kafka-manager doesn't show topic contents);
 Or when producer wants to know whether consumers can pull right msg from kafka , producers may has to write another test-consumer.
 
 I wrote this toy tool just for proving  to testers that my producer program works very well !
 
-Once Milena started , she can watch your  every new messgae of kafka topic confed in conf file and write it to a log file. And she also supports duration for offsets 
+Once Milena started , she can watch your  every new messgae of kafka topic confed in conf file and write it to a log file. And she also supports duration for offsets
 which means U can always restart Milena and don't need to worry about reconsume history messages.
 
 ## download
@@ -49,9 +49,10 @@ cd bin && ./Milena
 ```
 
 ## stop
-TODO: this will gen a command soon
+
+in the start cmd dir
 ```shell
-kill -2 $(pid of Milena)
+./Milena -s stop
 ```
 
 
@@ -79,9 +80,8 @@ there is a metadata dir in `${datadir}/${clustername}`, never delete it unless l
 
 ## TODO
 - optimize log append engine(cur can't be called engine, it's just a working shit)
-- testify and optimize stop mechanism 
+- testify and optimize stop mechanism
 - gen more cmd to help
-  - stop signal -s
   - reload signal -s
   - config option -f
   - clean command
