@@ -19,6 +19,7 @@ var omitTopic = []string{
 var (
 	running int32 = 1
 	stop int32 = 2
+	connecting int32= 3
 )
 
 type kafkaClusterConfig struct {
@@ -43,7 +44,7 @@ func newKafkaCluster(conf *kafkaClusterConfig) (*kafkaCluster, error) {
 	}
 
 	k := &kafkaCluster{c:conf}
-	k.state = running
+	k.state = connecting
 	k.mdataDir = k.c.DataDir + "/" + "meta"
 	//
 	var err error
@@ -58,15 +59,19 @@ func (k *kafkaCluster) connectloop() {
 	k.rw.Lock()
 	defer k.rw.Unlock()
 	c := sarama.NewConfig()
-	c.Net.DialTimeout = 5 *time.Second
+	c.Net.DialTimeout = 5 * time.Second
 	recon:
-	for atomic.LoadInt32(&k.state) == running {
+	for  {
+		if atomic.LoadInt32(&k.state) == stop {
+			return
+		}
 		consumer, err := sarama.NewConsumer(k.c.Brokers, c)
 		if err != nil {
 			log.Errorf("cluster=>[%s] connected fail to %v ,err=>", k.c.ClusterName, k.c.Brokers, err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
+		atomic.StoreInt32(&k.state, running)
 		k.consumer = consumer
 		goto conSucc
 	}
@@ -104,15 +109,19 @@ func (k *kafkaCluster)Run() {
 }
 
 func (k *kafkaCluster) Stop() {
-	atomic.CompareAndSwapInt32(&k.state, running, stop)
+	atomic.CompareAndSwapInt32(&k.state, connecting, stop)
 	k.rw.Lock()
 	defer k.rw.Unlock()
 	for _, tw := range k.tWorkers {
 		log.Degbugf("%s call stop", tw.c.TopicName)
 		tw.Stop()
 	}
-	k.consumer.Close()
-	k.mEngine.Close()
+	if k.consumer != nil {
+		k.consumer.Close()
+	}
+	if k.mEngine != nil {
+		k.mEngine.Close()
+	}
 }
 
 //TODO TODO TODO this is a really dummy ass !!!!!
