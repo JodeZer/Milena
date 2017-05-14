@@ -41,11 +41,10 @@ servers:
 ```
 
 ## run
-TODO: -f command to point config file soon;and now, it find `Milena.yml` in it's dir
-config your own Milena.yml for configuration only
 
+the default config file is ${curdir}/Milena.yml
 ```shell
-cd bin && ./Milena
+cd bin && ./Milena -f ${conf}.yml
 ```
 
 ## stop
@@ -83,8 +82,7 @@ there is a metadata dir in `${datadir}/${clustername}`, never delete it unless l
 - testify and optimize stop mechanism
 - gen more cmd to help
   - reload signal -s
-  - config option -f
-  - clean command
+  - repair command
 - add travis.ci to help
 - more powerful makefile
 - golang deps manage
