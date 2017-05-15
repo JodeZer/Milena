@@ -1,0 +1,14 @@
+datadir : data
+
+servers:
+- name: cluster1
+  brokers:
+  - "192.168.1.xxx:9092"
+  - "192.168.1.xxx:9092"
+  - "192.168.1.xxx:9092"
+  topics:
+  - name: "testTopic"
+    partitions:
+    - partition: 0
+      start: 7
+  - name: "testTopic2"
