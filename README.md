@@ -85,5 +85,4 @@ there is a metadata dir in `${datadir}/${clustername}`, never delete it unless l
   - repair command
 - add travis.ci to help
 - more powerful makefile
-- golang deps manage
 - fix shit code(always)
