@@ -19,7 +19,7 @@ var omitTopic = []string{
 var (
 	running int32 = 1
 	stop int32 = 2
-	connecting int32= 3
+	connecting int32 = 3
 )
 
 type kafkaClusterConfig struct {
@@ -61,7 +61,7 @@ func (k *kafkaCluster) connectloop() {
 	c := sarama.NewConfig()
 	c.Net.DialTimeout = 5 * time.Second
 	recon:
-	for  {
+	for {
 		if atomic.LoadInt32(&k.state) == stop {
 			return
 		}
@@ -124,21 +124,24 @@ func (k *kafkaCluster) Stop() {
 	}
 }
 
-//TODO TODO TODO this is a really dummy ass !!!!!
 func removeCommonTopics(ls []string, rs []string) []string {
-	f := func(ls []string, r string) []string {
-		for i, l := range ls {
-			if l == r {
-				res := ls[:i]
-				res = append(res, ls[i + 1:]...)
-				return res
-			}
+	res := make([]string, 0, len(ls))
+	m := make(map[string]byte, len(ls))
+	for _, v := range ls {
+		if _, ok := m[v]; ok {
+			continue
 		}
-		return ls
+		m[v] = byte(1)
 	}
 
-	for _, r := range rs {
-		ls = f(ls, r)
+	for _, v := range rs {
+		if _, ok := m[v]; ok {
+			delete(m, v)
+		}
 	}
-	return ls
+
+	for k, _ := range m {
+		res = append(res, k)
+	}
+	return res
 }

@@ -3,7 +3,8 @@ package Milena
 import "testing"
 
 func TestRemoveCommonTopics(t *testing.T) {
-	ls := []string{"a", "b", "c"}
+	ls := []string{"a","a", "b","b", "c"}
 	rs := []string{"a"}
-	t.Logf("%v", removeCommonTopics(ls, rs))
+	res := removeCommonTopics(ls, rs)
+	t.Logf("%v %d", res,len(res))
 }
