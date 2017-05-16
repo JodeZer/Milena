@@ -1,0 +1,12 @@
+language: go
+
+go_import_path: github.com/JodeZer/Milena
+
+go:
+  - 1.8
+  - 1.7
+  - 1.6
+
+script:
+  - make build
+  - go test -v
