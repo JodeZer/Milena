@@ -21,16 +21,16 @@ func main() {
 	//TODO -f to point config file
 	clia := cli.ParseArgs()
 	if clia.CliType == cli.Start {
-		_Milena_main(clia.ConfFile)
+		_MilenaMain(clia.ConfFile)
 		return
 	} else if clia.CliType == cli.Signal {
-		_Milena_SigCommands(clia.Sig.Keyword)
+		_MilenaSigCommands(clia.Sig.Keyword)
 		return
 	}
 
 }
 
-func _Milena_main(confFile string) {
+func _MilenaMain(confFile string) {
 	c := Milena.NewConfig(confFile)
 	log.Degbugf("%+v", c)
 	ins, err := Milena.NewInsatnce(c)
@@ -61,7 +61,7 @@ func _Milena_main(confFile string) {
 	time.Sleep(100 * time.Millisecond)
 }
 
-func _Milena_SigCommands(sig string) {
+func _MilenaSigCommands(sig string) {
 	if sig == _SIG_STOP {
 		file, err := os.Open("Milena.lock")
 		if err != nil {

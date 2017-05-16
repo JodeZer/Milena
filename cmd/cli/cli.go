@@ -4,7 +4,7 @@ import "flag"
 
 var (
 	// Start Cmd Type
-	Start  int32 = 1
+	Start int32 = 1
 
 	// Signal Cmd Type
 	Signal int32 = 2

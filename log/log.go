@@ -19,22 +19,22 @@ func init() {
 	Log.Level = log.DebugLevel
 }
 
-// Err log
+// Errorf log
 func Errorf(format string, args ...interface{}) {
 	Log.Errorf(format, args...)
 }
 
-// Info log
+// Infof log
 func Infof(format string, args ...interface{}) {
 	Log.Infof(format, args...)
 }
 
-// Warn log
+// Warnf log
 func Warnf(format string, args ...interface{}) {
 	Log.Warnf(format, args...)
 }
 
-// Debug log
+// Degbugf log
 func Degbugf(format string, args ...interface{}) {
 	Log.Debugf(getCodeLine()+format, args...)
 }
