@@ -67,7 +67,7 @@ recon:
 		}
 		consumer, err := sarama.NewConsumer(k.c.Brokers, c)
 		if err != nil {
-			log.Errorf("cluster=>[%s] connected fail to %v ,err=>", k.c.ClusterName, k.c.Brokers, err)
+			log.Errorf("cluster=>[%s] connected fail to %v ,err=>%s", k.c.ClusterName, k.c.Brokers, err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -140,7 +140,7 @@ func removeCommonTopics(ls []string, rs []string) []string {
 		}
 	}
 
-	for k, _ := range m {
+	for k := range m {
 		res = append(res, k)
 	}
 	return res

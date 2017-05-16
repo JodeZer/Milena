@@ -7,7 +7,10 @@ import (
 )
 
 type stopSig struct{}
-type StopChan chan stopSig
+
+type stopChan chan stopSig
+
+// Milena Instance
 type Instance struct {
 	rw       sync.RWMutex
 	c        *Config
@@ -15,6 +18,7 @@ type Instance struct {
 	clusters []*kafkaCluster
 }
 
+// NewInstances
 func NewInsatnce(conf *Config) (*Instance, error) {
 	ins := &Instance{}
 	ins.proclock = &plock{conf.LockFile}
@@ -24,6 +28,7 @@ func NewInsatnce(conf *Config) (*Instance, error) {
 	return ins, nil
 }
 
+// StartInstance
 func (i *Instance) Start() {
 
 	i.rw.Lock()
@@ -53,6 +58,7 @@ func (i *Instance) Start() {
 
 }
 
+// StopInstance
 func (i *Instance) Stop() {
 	i.rw.Lock()
 	defer i.rw.Unlock()
