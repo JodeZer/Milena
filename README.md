@@ -1,4 +1,7 @@
 # Milena
+
+[![Build Status](https://travis-ci.org/JodeZer/Milena.svg?branch=master)](https://travis-ci.org/JodeZer/Milena)
+
 kafka probe tool
 
 While using kafka as a prodcuer, it is a problem to know what if prodcuer pushs right message to it (At least kafka-manager doesn't show topic contents);
