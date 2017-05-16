@@ -30,7 +30,7 @@ type topicWorker struct {
 	pConsumer         []sarama.PartitionConsumer
 	partionKeys       map[int32]string
 	partitionSettings map[int32]*partionSetting
-	stopC             StopChan
+	stopC             stopChan
 }
 
 func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *topicWorkerConfig) *topicWorker {
@@ -43,7 +43,7 @@ func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *to
 		t.partitionSettings[p.Partition] = &p
 	}
 	t.tEngine = newTopicSimpleStorageEngine(&topicStorageConfig{t.topicFileName})
-	t.stopC = make(StopChan, 1)
+	t.stopC = make(stopChan, 1)
 	return t
 }
 

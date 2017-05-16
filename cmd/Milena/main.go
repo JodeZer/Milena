@@ -14,23 +14,23 @@ import (
 )
 
 const (
-	SIG_STOP = "stop"
+	_SIG_STOP = "stop"
 )
 
 func main() {
 	//TODO -f to point config file
 	clia := cli.ParseArgs()
 	if clia.CliType == cli.Start {
-		Milena_main(clia.ConfFile)
+		_Milena_main(clia.ConfFile)
 		return
 	} else if clia.CliType == cli.Signal {
-		Milena_SigCommands(clia.Sig.Keyword)
+		_Milena_SigCommands(clia.Sig.Keyword)
 		return
 	}
 
 }
 
-func Milena_main(confFile string) {
+func _Milena_main(confFile string) {
 	c := Milena.NewConfig(confFile)
 	log.Degbugf("%+v", c)
 	ins, err := Milena.NewInsatnce(c)
@@ -61,8 +61,8 @@ func Milena_main(confFile string) {
 	time.Sleep(100 * time.Millisecond)
 }
 
-func Milena_SigCommands(sig string) {
-	if sig == SIG_STOP {
+func _Milena_SigCommands(sig string) {
+	if sig == _SIG_STOP {
 		file, err := os.Open("Milena.lock")
 		if err != nil {
 			log.Errorf("load process fail %s", err)

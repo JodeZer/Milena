@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// log instance
 var Log *log.Logger
 
 func init() {
@@ -18,18 +19,22 @@ func init() {
 	Log.Level = log.DebugLevel
 }
 
+// Err log
 func Errorf(format string, args ...interface{}) {
 	Log.Errorf(format, args...)
 }
 
+// Info log
 func Infof(format string, args ...interface{}) {
 	Log.Infof(format, args...)
 }
 
+// Warn log
 func Warnf(format string, args ...interface{}) {
 	Log.Warnf(format, args...)
 }
 
+// Debug log
 func Degbugf(format string, args ...interface{}) {
 	Log.Debugf(getCodeLine()+format, args...)
 }

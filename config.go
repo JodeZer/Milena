@@ -21,6 +21,7 @@ const defaultLockFileName = "Milena.lock"
 
 var curDir string
 
+// Config Entity
 type Config struct {
 	//config file path
 	FileName string
@@ -70,6 +71,7 @@ type partionSetting struct {
 	Start int64
 }
 
+// NewConfig
 func NewConfig(fileName string) *Config {
 	c := &Config{}
 	if fileName == "" {

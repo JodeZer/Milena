@@ -18,7 +18,7 @@ func (p *plock) Lock() error {
 	}
 
 	if file, err := os.Create(p.FileName); err != nil {
-		return errors.New(fmt.Sprintf("create lock failed %s", err))
+		return fmt.Errorf("create lock failed %s", err)
 	} else {
 		pid := os.Getpid()
 		file.Write([]byte(strconv.Itoa(pid)))
