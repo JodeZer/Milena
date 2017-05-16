@@ -1,13 +1,13 @@
 package Milena
 
 import (
-	"gopkg.in/Shopify/sarama.v1"
-	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/JodeZer/Milena/log"
 	"encoding/binary"
-	"os"
-	"github.com/pkg/errors"
 	"fmt"
+	"github.com/JodeZer/Milena/log"
+	"github.com/pkg/errors"
+	"github.com/syndtr/goleveldb/leveldb"
+	"gopkg.in/Shopify/sarama.v1"
+	"os"
 	"sync"
 )
 
@@ -40,7 +40,7 @@ type metaLevelDBStorageEngine struct {
 	db *leveldb.DB
 }
 
-func (m *metaLevelDBStorageEngine)UpdateOffset(key string, offset int64) error {
+func (m *metaLevelDBStorageEngine) UpdateOffset(key string, offset int64) error {
 	var b []byte = make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(offset))
 	m.db.Put([]byte(key), b, nil)
@@ -64,7 +64,7 @@ func (m *metaLevelDBStorageEngine) Close() {
 //implement topicStorage Engine
 func newTopicSimpleStorageEngine(conf *topicStorageConfig) topicStorageEngine {
 	e := &topicSimpleStorageEngine{}
-	if f, err := os.OpenFile(conf.FileName, os.O_APPEND | os.O_CREATE | os.O_WRONLY, 0666); err != nil {
+	if f, err := os.OpenFile(conf.FileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666); err != nil {
 		log.Errorf("%s", err)
 	} else {
 		e.file = f

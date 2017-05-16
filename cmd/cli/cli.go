@@ -3,19 +3,19 @@ package cli
 import "flag"
 
 var (
-	Start int32 = 1
+	Start  int32 = 1
 	Signal int32 = 2
 )
 
 type Cli struct {
 	// command type
-	CliType  int32
+	CliType int32
 
 	// signal
-	Sig      struct {
-				 //Signal keyword
-				 Keyword string
-			 }
+	Sig struct {
+		//Signal keyword
+		Keyword string
+	}
 	// conf file
 	ConfFile string
 }

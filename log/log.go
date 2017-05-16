@@ -31,7 +31,7 @@ func Warnf(format string, args ...interface{}) {
 }
 
 func Degbugf(format string, args ...interface{}) {
-	Log.Debugf(getCodeLine() + format, args...)
+	Log.Debugf(getCodeLine()+format, args...)
 }
 
 func getCodeLine() string {
@@ -42,5 +42,5 @@ func getCodeLine() string {
 	}
 	lineStr := strconv.Itoa(line)
 	ss := strings.Split(file, "Milena/")
-	return ss[len(ss) - 1] + ":" + lineStr + " "
+	return ss[len(ss)-1] + ":" + lineStr + " "
 }

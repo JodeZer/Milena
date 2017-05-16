@@ -1,10 +1,10 @@
 package Milena
 
 import (
-	"path/filepath"
-	"os"
 	"github.com/JodeZer/Milena/log"
 	"github.com/jinzhu/configor"
+	"os"
+	"path/filepath"
 )
 
 func init() {
@@ -26,7 +26,7 @@ type Config struct {
 	FileName string
 
 	//data files dir
-	DataDir  string
+	DataDir string
 
 	//log level
 	LogLevel string
@@ -35,28 +35,27 @@ type Config struct {
 	LockFile string `yaml:"-"`
 
 	//listen servers
-	Servers  []struct {
+	Servers []struct {
 		//kafka cluster name
-		Name        string
+		Name string
 
 		// storage consumer metadata format: {clusterName}/{topic}.meta
-		MetaDataDir string`yaml:"-"`
+		MetaDataDir string `yaml:"-"`
 
 		// Server address
-		Brokers     []string
-
+		Brokers []string
 
 		// listen all topics
-		ListenAll   bool
+		ListenAll bool
 
 		// listen topic
-		Topics      []topicSetting
+		Topics []topicSetting
 	}
 }
 
 type topicSetting struct {
 	//topic name
-	Name  string
+	Name string
 
 	//partition setting
 	Partitions []partionSetting
@@ -69,8 +68,6 @@ type partionSetting struct {
 
 	// this time start offset. configed or from metadata
 	Start int64
-
-
 }
 
 func NewConfig(fileName string) *Config {

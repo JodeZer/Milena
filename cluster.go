@@ -1,12 +1,12 @@
 package Milena
 
 import (
-	"gopkg.in/Shopify/sarama.v1"
 	"fmt"
 	"github.com/JodeZer/Milena/log"
-	"time"
-	"sync/atomic"
+	"gopkg.in/Shopify/sarama.v1"
 	"sync"
+	"sync/atomic"
+	"time"
 )
 
 //=======================================
@@ -17,8 +17,8 @@ var omitTopic = []string{
 }
 
 var (
-	running int32 = 1
-	stop int32 = 2
+	running    int32 = 1
+	stop       int32 = 2
 	connecting int32 = 3
 )
 
@@ -43,7 +43,7 @@ func newKafkaCluster(conf *kafkaClusterConfig) (*kafkaCluster, error) {
 		return nil, fmt.Errorf("%s has no broker", conf.ClusterName)
 	}
 
-	k := &kafkaCluster{c:conf}
+	k := &kafkaCluster{c: conf}
 	k.state = connecting
 	k.mdataDir = k.c.DataDir + "/" + "meta"
 	//
@@ -60,7 +60,7 @@ func (k *kafkaCluster) connectloop() {
 	defer k.rw.Unlock()
 	c := sarama.NewConfig()
 	c.Net.DialTimeout = 5 * time.Second
-	recon:
+recon:
 	for {
 		if atomic.LoadInt32(&k.state) == stop {
 			return
@@ -75,7 +75,7 @@ func (k *kafkaCluster) connectloop() {
 		k.consumer = consumer
 		goto conSucc
 	}
-	conSucc:
+conSucc:
 	if len(k.c.ListenTopics) == 0 {
 		ts, err := k.consumer.Topics()
 		if err != nil {
@@ -83,17 +83,17 @@ func (k *kafkaCluster) connectloop() {
 		}
 		ts = removeCommonTopics(ts, omitTopic)
 		for _, t := range ts {
-			k.c.ListenTopics = append(k.c.ListenTopics, topicSetting{Name:t})
+			k.c.ListenTopics = append(k.c.ListenTopics, topicSetting{Name: t})
 		}
 
 	}
 
 	for _, t := range k.c.ListenTopics {
 		tw := newTopicWorker(k.consumer, k.mEngine, &topicWorkerConfig{
-			TopicName:t.Name,
-			Partions:t.Partitions,
-			DataDir:k.c.DataDir,
-			ClusterNameBelong:k.c.ClusterName,
+			TopicName:         t.Name,
+			Partions:          t.Partitions,
+			DataDir:           k.c.DataDir,
+			ClusterNameBelong: k.c.ClusterName,
 		})
 		k.tWorkers = append(k.tWorkers, tw)
 	}
@@ -103,7 +103,7 @@ func (k *kafkaCluster) connectloop() {
 	}
 
 }
-func (k *kafkaCluster)Run() {
+func (k *kafkaCluster) Run() {
 	go k.connectloop()
 
 }

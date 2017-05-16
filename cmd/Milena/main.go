@@ -1,16 +1,16 @@
 package main
 
 import (
-	"github.com/JodeZer/Milena"
-	"os"
-	"os/signal"
-	"github.com/JodeZer/Milena/log"
-	"time"
-	"syscall"
-	"github.com/JodeZer/Milena/cmd/cli"
-	"os/exec"
-	"io/ioutil"
 	"fmt"
+	"github.com/JodeZer/Milena"
+	"github.com/JodeZer/Milena/cmd/cli"
+	"github.com/JodeZer/Milena/log"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 const (

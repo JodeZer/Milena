@@ -1,9 +1,9 @@
 package Milena
 
 import (
-	"gopkg.in/Shopify/sarama.v1"
-	"github.com/JodeZer/Milena/log"
 	"fmt"
+	"github.com/JodeZer/Milena/log"
+	"gopkg.in/Shopify/sarama.v1"
 	"time"
 )
 
@@ -34,7 +34,7 @@ type topicWorker struct {
 }
 
 func newTopicWorker(consumer sarama.Consumer, metaDB metaStorageEngine, conf *topicWorkerConfig) *topicWorker {
-	t := &topicWorker{c:conf, mEngine:metaDB}
+	t := &topicWorker{c: conf, mEngine: metaDB}
 	t.topickey = t.c.ClusterNameBelong + "." + t.c.TopicName
 	t.topicFileName = t.c.DataDir + "/" + t.c.TopicName + ".log"
 	t.consumer = consumer
@@ -60,7 +60,7 @@ func (t *topicWorker) Run() {
 		dbOff := t.mEngine.GetOffset(genPartitionkey(t.topickey, p))
 		pconf, ok := t.partitionSettings[p]
 		if !ok {
-			pconf = &partionSetting{Start:0}
+			pconf = &partionSetting{Start: 0}
 		}
 		if pconf.Start < dbOff {
 			pconf.Start = dbOff
@@ -80,7 +80,7 @@ func (t *topicWorker) Run() {
 }
 
 func (t *topicWorker) Stop() {
-	for i := 0; i < len(t.pConsumer) + 1; i++ {
+	for i := 0; i < len(t.pConsumer)+1; i++ {
 		t.stopC <- stopSig{}
 	}
 	//wait all exit
@@ -89,7 +89,7 @@ func (t *topicWorker) Stop() {
 	t.tEngine.Close()
 }
 
-func (t *topicWorker)readLoop() {
+func (t *topicWorker) readLoop() {
 	msgChan := make(chan *sarama.ConsumerMessage, 1000)
 	func() {
 		for i, pc := range t.pConsumer {
@@ -98,7 +98,7 @@ func (t *topicWorker)readLoop() {
 
 					select {
 					case msg := <-spc.Messages():
-						msgChan <- msg//TODO timeout
+						msgChan <- msg //TODO timeout
 					case <-t.stopC:
 						spc.Close()
 						log.Degbugf("%s~%d rcv stop sig and stop", t.topickey, index)
@@ -113,12 +113,12 @@ func (t *topicWorker)readLoop() {
 	for {
 		select {
 		case msg := <-msgChan:
-			log.Degbugf(genLineMsg(msg))//TODO storage
+			log.Degbugf(genLineMsg(msg)) //TODO storage
 			if err := t.tEngine.Append(msg); err != nil {
 				log.Errorf("append fail %s", err)
 				continue
 			}
-			t.mEngine.UpdateOffset(t.partionKeys[msg.Partition], msg.Offset + 1)
+			t.mEngine.UpdateOffset(t.partionKeys[msg.Partition], msg.Offset+1)
 		case <-t.stopC:
 			log.Degbugf("%s rcv stop sig and stop write", t.c.TopicName)
 			return

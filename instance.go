@@ -35,10 +35,10 @@ func (i *Instance) Start() {
 	}
 	for _, s := range i.c.Servers {
 		k, err := newKafkaCluster(&kafkaClusterConfig{
-			ClusterName:s.Name,
-			Brokers:s.Brokers,
-			DataDir:i.c.DataDir + "/" + s.Name,
-			ListenTopics:s.Topics,
+			ClusterName:  s.Name,
+			Brokers:      s.Brokers,
+			DataDir:      i.c.DataDir + "/" + s.Name,
+			ListenTopics: s.Topics,
 		})
 		if err != nil {
 			log.Errorf("start failed %s", err)
@@ -62,4 +62,3 @@ func (i *Instance) Stop() {
 	}
 	i.proclock.Unlock()
 }
-

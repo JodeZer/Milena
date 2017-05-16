@@ -1,10 +1,10 @@
 package testUtil
 
 import (
-	"testing"
-	"strings"
-	"strconv"
 	"runtime"
+	"strconv"
+	"strings"
+	"testing"
 )
 
 type DeepEqual func(interface{}, interface{}) bool
@@ -20,6 +20,6 @@ func Test(t *testing.T, n string, in interface{}, expect interface{}, f DeepEqua
 	}
 	lineStr := strconv.Itoa(line)
 	ss := strings.Split(file, "Milena/")
-	LINE := ss[len(ss) - 1] + ":" + lineStr + " "
+	LINE := ss[len(ss)-1] + ":" + lineStr + " "
 	t.Fatalf("%s %s fail\n", LINE, n)
 }

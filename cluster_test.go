@@ -1,9 +1,9 @@
 package Milena
 
 import (
-	"testing"
-	"sort"
 	"github.com/JodeZer/Milena/util/testUtil"
+	"sort"
+	"testing"
 )
 
 type sortStringSlice []string

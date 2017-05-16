@@ -1,9 +1,9 @@
 package Milena
 
 import (
-	"os"
-	"github.com/pkg/errors"
 	"fmt"
+	"github.com/pkg/errors"
+	"os"
 	"strconv"
 )
 
@@ -11,7 +11,7 @@ type plock struct {
 	FileName string
 }
 
-func (p *plock)Lock() error {
+func (p *plock) Lock() error {
 
 	if _, err := os.Stat(p.FileName); !os.IsNotExist(err) {
 		return errors.New("Process has started")
@@ -27,9 +27,6 @@ func (p *plock)Lock() error {
 	return nil
 }
 
-func (p *plock)Unlock() {
+func (p *plock) Unlock() {
 	os.Remove(p.FileName)
 }
-
-
-
