@@ -1,0 +1,19 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "BTEEE4UhCj/mD8pv6pgpfEypags=",
+			"path": "github.com/CrowdSurge/banner",
+			"revision": "8c0e79dc5ff70fb2919f0d662f44fd72ccdf9be2",
+			"revisionTime": "2014-09-23T20:03:36Z"
+		},
+		{
+			"checksumSHA1": "fzJXXUwf9Sg1x1kCkF5JGvqN6Zs=",
+			"path": "github.com/CrowdSurge/banner/fonts",
+			"revision": "8c0e79dc5ff70fb2919f0d662f44fd72ccdf9be2",
+			"revisionTime": "2014-09-23T20:03:36Z"
+		}
+	],
+	"rootPath": "github.com/JodeZer/Milena"
+}

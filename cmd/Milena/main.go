@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"github.com/CrowdSurge/banner"
 )
 
 const (
@@ -40,6 +41,8 @@ func _MilenaMain(confFile string) {
 	}
 	// start listen instance
 	ins.Start()
+
+	banner.Print("m i l e n a")
 
 	log.Infof("Milena Starts pid:%d", os.Getpid())
 
