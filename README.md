@@ -1,6 +1,7 @@
 # Milena
 
 [![Build Status](https://travis-ci.org/JodeZer/Milena.svg?branch=master)](https://travis-ci.org/JodeZer/Milena)
+[![Go Report Card](https://goreportcard.com/badge/github.com/JodeZer/Milena)](https://goreportcard.com/report/github.com/JodeZer/Milena)
 
 kafka probe tool
 
